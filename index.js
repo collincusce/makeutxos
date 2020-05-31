@@ -16,15 +16,16 @@ function sleep(ms) {
  async function run() { 
      console.log("entered run");
     let myKeychain = avm.keyChain();
-    let mypk = bintools.avaDeserialize("1BcJibudRMKuS83XW4Aum8FC6C36nBYaXh7aSWdjdAoaPxV7m");
+    let mypk = bintools.avaDeserialize("2VmHrE91a2jAupjYAek7qosdMTq24SNBrhxjekBvjRm2swbQQ8");
     let genesisAddress = myKeychain.importKey(mypk);
-
+    console.log(bintools.avaSerialize(genesisAddress));
     let fundedAddress = myKeychain.makeKey();
     console.log("getasset id")
     let assetid = await avm.getAVAAssetID();
     console.log("get utxos");
     let genutxos = await avm.getUTXOs([genesisAddress]);
-    let btx = await avm.makeBaseTx(genutxos, new BN(1500000), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
+    console.log(genutxos.getBalance([genesisAddress], assetid));
+    let btx = await avm.makeBaseTx(genutxos, new BN,(1500000), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
     console.log("signing 1");
     let tx = btx.sign(myKeychain);
     console.log("issuing 1");
@@ -32,7 +33,7 @@ function sleep(ms) {
     console.log("issued 1, sleeping");
     await sleep(5000);
 
-    let status = avm.getTxStatus(txidissue);
+    let status = await avm.getTxStatus(txidissue);
     console.log("status", status);
     if(status != "Accepted") {
         console.log("tx not accepted");
@@ -77,5 +78,7 @@ function sleep(ms) {
 
  }
 console.log("entering run");
- run();
+ run().catch((e) => {
+    console.log(e)
+ });
 
