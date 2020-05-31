@@ -25,9 +25,10 @@ function sleep(ms) {
     console.log("get utxos");
     let genutxos = await avm.getUTXOs([genesisAddress]);
     console.log(genutxos.getBalance([genesisAddress], assetid));
-    let btx = await avm.makeBaseTx(genutxos, new BN,(1500000), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
+    let btx = await avm.makeBaseTx(genutxos, new BN(1500000), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
     console.log("signing 1");
     let tx = btx.sign(myKeychain);
+    console.log(tx.toBuffer().toString("hex"));
     console.log("issuing 1");
     let txidissue = await avm.issueTx(tx);
     console.log("issued 1, sleeping");
@@ -39,42 +40,43 @@ function sleep(ms) {
         console.log("tx not accepted");
         process.exit();
     }
-    console.log("tx accepted, fundd");
+    console.log("tx accepted, funded");
 
     let blockchainID = avm.getBlockchainID();
+    let faddr = myKeychain.getKey(fundedAddress).getAddressString();
+    console.log(faddr);
 
-    let utxos = await avm.getUTXOs([fundedAddress]);
+    let utxos = await avm.getUTXOs([faddr]);
 
     let outs = [];
 
     let addr = myKeychain.makeKey();
+    console.log("sending to", addr)
 
     let total = new BN(0);
 
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 1000; i++) {
         let o = new slopes.SecpOutput(new BN(1000), new BN(0), 1, [addr]);
         let xferout = new slopes.TransferableOutput(assetid, o);
         outs.push(xferout);
-        total = total.add(1000);
-        console.log("making output ", i);
+        total = total.add(new BN(1000));
     }
 
-    let utxo = utxos.getAllUTXOs()[0];
+    let utxoall = utxos.getAllUTXOs();
+    let utxo = utxoall[0];
     let output = utxo.getOutput(); //type assert AmountOutput
-    let outputidx = utxos.getOutputIdx();
+    let outputidx = utxo.getOutputIdx();
     let txid = utxo.getTxID();
     let input = new slopes.SecpInput(output.getAmount());
-    let xferin = new slopes.TransferableInput(txid, outputidx, assetID, input);
-
-
-    let basetx = new slopes.BaseTx(3, blockchainID, outs, [xferin]);
+    input.addSignatureIdx(output.getAddressIdx(fundedAddress), fundedAddress);
+    let xferin = new slopes.TransferableInput(txid, outputidx, assetid, input);
+    
+    let basetx = new slopes.BaseTx(3, bintools.avaDeserialize(blockchainID), outs, [xferin]);
     let finaltx = new slopes.UnsignedTx(basetx);
-    console.log("signing");
-    finaltx.sign(myKeychain);
-    console.log("issuing");
-    let txidfinale = await avm.issueTx(finaltx);
+    let thebigone = finaltx.sign(myKeychain);
+    let txidfinale = await avm.issueTx(thebigone);
 
-    console.log("txidfinale", txidfinale);
+    console.log("txidfinale", txidfinale, "address", fundedAddress, "sent everything to", addr);
 
  }
 console.log("entering run");
