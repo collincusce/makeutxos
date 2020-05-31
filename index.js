@@ -38,7 +38,7 @@ function sleep(ms) {
         console.log("tx not accepted");
         process.exit();
     }
-console.log("tx accepted, fundd");
+    console.log("tx accepted, fundd");
 
     let blockchainID = avm.getBlockchainID();
 
@@ -68,9 +68,9 @@ console.log("tx accepted, fundd");
 
     let basetx = new slopes.BaseTx(3, blockchainID, outs, [xferin]);
     let finaltx = new slopes.UnsignedTx(basetx);
-console.log("signing");
+    console.log("signing");
     finaltx.sign(myKeychain);
-console.log("issuing");
+    console.log("issuing");
     let txidfinale = await avm.issueTx(finaltx);
 
     console.log("txidfinale", txidfinale);
