@@ -51,15 +51,15 @@ function sleep(ms) {
     let outs = [];
 
     let addr = myKeychain.makeKey();
-    console.log("sending to", addr)
+    console.log("sending to", bintools.avaSerialize(addr))
 
     let total = new BN(0);
 
-    for(let i = 0; i < 1000; i++) {
-        let o = new slopes.SecpOutput(new BN(1000), new BN(0), 1, [addr]);
+    for(let i = 0; i < 2500; i++) {
+        let o = new slopes.SecpOutput(new BN(100), new BN(0), 1, [addr]);
         let xferout = new slopes.TransferableOutput(assetid, o);
         outs.push(xferout);
-        total = total.add(new BN(1000));
+        total = total.add(new BN(100));
     }
 
     let utxoall = utxos.getAllUTXOs();
@@ -76,7 +76,7 @@ function sleep(ms) {
     let thebigone = finaltx.sign(myKeychain);
     let txidfinale = await avm.issueTx(thebigone);
 
-    console.log("txidfinale", txidfinale, "address", fundedAddress, "sent everything to", addr);
+    console.log("txidfinale", txidfinale, "address", bintools.avaSerialize(fundedAddress), "sent everything to", bintools.avaSerialize(addr));
 
  }
 console.log("entering run");
