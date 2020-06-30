@@ -16,7 +16,7 @@ function sleep(ms) {
  async function run() { 
      console.log("entered run");
     let myKeychain = avm.keyChain();
-    let mypk = bintools.avaDeserialize("2VmHrE91a2jAupjYAek7qosdMTq24SNBrhxjekBvjRm2swbQQ8");
+    let mypk = bintools.avaDeserialize("28Qmpffe2aEaEXuC7nEGfnbfhuFZJPTawwaGMyzB7jcmzDxS4p");
     let genesisAddress = myKeychain.importKey(mypk);
     console.log(bintools.avaSerialize(genesisAddress));
     let fundedAddress = myKeychain.makeKey();
