@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "avalanche": "^2.2.1",
     "bn.js": "^5.1.2",
-    "buffer": "^5.6.0",
-    "slopes": "file:../../slopes"
+    "buffer": "^5.6.0"
   },
   "devDependencies": {}
 }
