@@ -2,7 +2,7 @@ const avalanche = require("avalanche");
 const BN = require("bn.js");
 const Buffer = require('buffer/').Buffer;
 
-let bintools = slopes.BinTools.getInstance();
+
 
 /* ADJUST TEHSE LINES ACCORDINGLY */
 /* THIS SCRIPT PRESENTLY ASSUMES NO TX FEES */
@@ -13,6 +13,8 @@ const genSK = "<some secret key with a TON of AVAX>"; // change that for sure
 
 let ava = new avalanche.Avalanche("localhost", 9650, "http", 3, "X");
 let avm = ava.AVM(); //returns a reference to the AVM API used by Avalanche
+
+let bintools = ava.BinTools.getInstance();
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -44,7 +46,7 @@ function sleep(ms) {
     console.log(genutxos.getBalance([genesisAddress], assetid));
 
     // let's max a transaction, it's just a simple spend tx, and let's fund our "fundedAddress" with the budget
-    let btx = await avm.makeBaseTx(genutxos, new BN(N * A), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
+    let btx = await avm.buildBaseTx(genutxos, new BN(N * A), [fundedAddress], [genesisAddress], [genesisAddress], assetid);
     console.log("signing 1");
     // you must sign for it to be fine
     let tx = btx.sign(myKeychain);
