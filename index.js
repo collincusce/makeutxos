@@ -4,16 +4,12 @@ const Buffer = require('buffer/').Buffer;
 
 let bintools = slopes.BinTools.getInstance();
 
-
-
-
-
-
 /* ADJUST TEHSE LINES ACCORDINGLY */
 /* THIS SCRIPT PRESENTLY ASSUMES NO TX FEES */
 const networkId = 3;
 const N = 1500; // We're making how many???
 const A = 1; // number nanoAVAX funding each N addresses
+const genSK = "<some secret key with a TON of AVAX>"; // change that for sure
 
 let ava = new avalanche.Avalanche("localhost", 9650, "http", 3, "X");
 let avm = ava.AVM(); //returns a reference to the AVM API used by Avalanche
@@ -30,7 +26,7 @@ function sleep(ms) {
     let myKeychain = avm.keyChain();
 
     // import a secret key that has a ton of avax for funding other addresses
-    let mysk = bintools.avaDeserialize("<some secret key with a TON of AVAX>");
+    let mysk = bintools.avaDeserialize(genSK);
     // let's just call this address the "genesis address" (even though it doesn't have to be in the genesis)
     let genesisAddress = myKeychain.importKey(mysk);
     console.log(bintools.avaSerialize(genesisAddress));
